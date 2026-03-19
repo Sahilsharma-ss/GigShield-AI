@@ -83,3 +83,118 @@ Our flagged-claim workflow protects the liquidity pool while preserving fairness
 
 ### Operational Outcome Under Attack
 With this architecture, a 500-worker spoofing ring is less likely to drain the pool because synchronized fake claims trigger cluster-level anomaly controls, while genuine stranded workers continue to receive timely support through low-friction, fairness-aware verification.
+
+## System Architecture Diagram
+
+### Layered Defense Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ 5) HUMAN OVERSIGHT + APPEALS LAYER                          │
+│    (Fraud team console, explainability, appeal loop)        │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│ 4) DECISION ORCHESTRATION LAYER                             │
+│    ├─ Auto-Approve Lane (low risk)                          │
+│    ├─ Step-Up Verification Lane (medium risk)               │
+│    └─ Investigate & Hold Lane (high risk)                   │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│ 3) RISK SCORING LAYER                                       │
+│    ├─ Individual Risk Score (claim-level)                   │
+│    └─ Cluster Risk Score (ring-level coordinated fraud)     │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│ 2) FEATURE INTELLIGENCE LAYER                               │
+│    ├─ Route plausibility & movement continuity             │
+│    ├─ Device integrity & spoofing likelihood               │
+│    └─ Historical reliability & behavior patterns            │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────────────┐
+│ 1) SIGNAL INGESTION LAYER                                   │
+│    ├─ GPS + Motion Sensors (accelerometer, gyroscope)      │
+│    ├─ Device Integrity Signals                              │
+│    ├─ Network & Session Metadata                            │
+│    ├─ Weather Feeds & Environmental Data                    │
+│    └─ Historical Account & Behavioral Events                │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Claim Decision Flow
+
+```
+WORKER SUBMITS CLAIM
+        │
+        ▼
+FETCH MULTI-SOURCE DATA (real-time)
+├─ GPS + Motion sensors
+├─ Device Integrity Check
+├─ Network/Session Metadata
+├─ Hyperlocal Weather Data
+└─ Account History & Behavior
+        │
+        ▼
+COMPUTE RISK SCORES
+├─ Individual Risk Score
+│  (movement realism, device trust, route context)
+│
+└─ Cluster Risk Score
+   (coordinated timing, shared fingerprints, ring detection)
+        │
+        ┌─────────────────────────────────────────┐
+        │                                         │
+        ▼                                         ▼
+  Individual Score?                        Cluster Score?
+        │                                         │
+   ┌────┴────┬────────┐                  ┌───────┴──────┐
+   │         │        │                  │              │
+  LOW     MED       HIGH                LOW           ELEVATED
+   │      │         │                  │               │
+   ▼      ▼         ▼                  ▼               ▼
+AUTO-  STEP-UP  INVESTIGATE&         ✓OK          ENHANCED
+APPROVE VERIFY   HOLD+ANALYST                     VERIFICATION
+   │      │        │                               (geo-cell
+   │      │        │                                circuit
+   ▼      ▼        ▼                                breaker)
+   └──────┴────────┘
+          │
+          ▼
+  APPLY GRACE MODE IF NEEDED
+  (bad connectivity in weather zone)
+          │
+          ▼
+  MAKE PAYOUT DECISION + EXPLANATION
+          │
+          ▼
+  LOG OUTCOME FOR MODEL CALIBRATION
+```
+
+## Ring Detection Logic (Coordinated Fraud Signal)
+
+When a burst of claims arrives within a narrow time window:
+
+```
+CLUSTER ANALYSIS TRIGGERS IF:
+├─ 5+ claims within 15 minutes
+├─ From geographically tight area (< 2km² cell)
+├─ With shared device fingerprints or IP patterns
+├─ And synchronized timestamps
+     │
+     ▼
+RING RISK ELEVATION
+├─ Individual scores are re-weighted upward
+├─ Geo-cell enters enhanced verification mode
+├─ Payout throttle engages (preserve liquidity)
+└─ Fraud analyst gets alert with cluster graph
+     │
+     ▼
+GENUINE CLAIMS STILL MOVE FAST
+(low-risk workers in that cell bypass step-up)
+
+SUSPICIOUS BURST GETS HELD & INVESTIGATED
+(risk-sorted, not auto-rejected)
+```
