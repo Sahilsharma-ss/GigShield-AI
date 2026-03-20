@@ -1,0 +1,41 @@
+sequenceDiagram
+  actor Worker as Delivery Worker
+  participant App as GigShield App
+  participant Ingest as Signal Ingestion
+  participant Risk as Risk Scorer
+  participant Decision as Decision Engine
+  participant Verify as Verification Service
+  participant Payout as Payout System
+  participant Audit as Audit Logger
+
+  Worker->>App: Submit disruption claim
+  App->>Ingest: GPS + sensor bundle
+  App->>Ingest: Device attestation token
+  App->>Ingest: Network/session metadata
+
+  Ingest->>Ingest: Validate sensor continuity
+  Ingest->>Risk: Normalized feature set
+
+  Risk->>Risk: Compute individual risk score
+  Risk->>Risk: Compute cluster risk score
+  Risk->>Decision: Risk scores + signal breakdown
+
+  alt Individual score < 2.5 AND Cluster score < 3.0
+    Decision->>Payout: Auto-approve
+    Payout->>Worker: Instant payout
+    Decision->>Audit: LOG -- AUTO_APPROVED
+
+  else Individual score 2.5-6.0 OR Cluster score 3.0-6.5
+    Decision->>Verify: Request step-up proof
+    Verify->>Worker: Lightweight verification prompt
+    Worker->>Verify: Submit proof
+    Verify->>Decision: Verification result
+    Decision->>Payout: Approve if verified
+    Payout->>Worker: Payout within 15 min
+    Decision->>Audit: LOG -- STEP_UP_VERIFIED
+
+  else Individual score > 6.0 OR Cluster score > 6.5
+    Decision->>Decision: Hold and alert analyst
+    Decision->>Audit: LOG -- INVESTIGATE_HOLD
+    Decision->>Worker: Quick safety check in progress
+  end

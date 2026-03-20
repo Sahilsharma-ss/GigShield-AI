@@ -1,0 +1,28 @@
+flowchart TD
+  A([Claim received with sensor bundle]) --> B
+
+  B["Check movement continuity\n(accelerometer + GPS breadcrumbs)"]
+  B --> C{Physically plausible?}
+  C -->|Yes| D[Movement score: LOW]
+  C -->|No| E["Movement score: HIGH\n(impossible speed or jump)"]
+
+  D & E --> F["Check device integrity\n(mock location, root, emulator flags)"]
+  F --> G{Attestation passes?}
+  G -->|Yes| H[Device score: LOW]
+  G -->|No| I[Device score: HIGH]
+
+  H & I --> J["Fetch hyperlocal weather\n+ nearby disruption data"]
+  J --> K{Environment matches\nclaimed disruption?}
+  K -->|Yes| L[Environment: CORROBORATED]
+  K -->|No| M[Environment: INCONSISTENT]
+
+  L & M --> N[Load worker historical reliability score]
+
+  N --> O["Compute Individual Risk Score (0-10)\n--------------------------\nMovement continuity  30%\nDevice integrity     25%\nEnvironmental match  20%\nHistorical reliability 15%\nBehavioral anomaly   10%"]
+
+  O --> P["Run cluster check\n(recent claims, same geo-cell,\nlast 15 min, radius < 2km)"]
+  P --> Q{"5+ claims with shared\nfingerprints or sync timestamps?"}
+  Q -->|Yes| R["Elevate cluster risk score\nTrigger geo-cell circuit breaker"]
+  Q -->|No| S[Cluster score: NORMAL]
+
+  R & S --> T([Route to Decision Engine])

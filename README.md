@@ -1,346 +1,513 @@
-# 🛡️ GigShield-AI
+# GigShield-AI
 
 ### AI-Powered Fraud-Resistant Parametric Insurance for Delivery Workers
 
-🏆 **Guidewire DEVTrails 2026 - Phase 1 Submission**  
-👥 **Theme:** Adversarial Defense & Anti-Spoofing Under Coordinated Attack  
-⚔️ **Crisis:** 500-worker GPS-spoofing syndicate draining liquidity pools in real-time
+[![Guidewire DEVTrails 2026](https://img.shields.io/badge/Guidewire-DEVTrails%202026-0A66C2?style=for-the-badge)](#)
+[![Phase 1 Submission](https://img.shields.io/badge/Submission-Phase%201-1F8B4C?style=for-the-badge)](#)
+[![Theme](https://img.shields.io/badge/Theme-Adversarial%20Defense%20%26%20Anti--Spoofing-B22222?style=for-the-badge)](#)
+[![Status](https://img.shields.io/badge/Status-Attack--Ready%20Architecture-111111?style=for-the-badge)](#)
+
+> Crisis scenario: a 500-worker GPS-spoofing syndicate attempts to drain insurance liquidity pools in real time.
+
+---
+
+## Executive Summary
+
+A sophisticated fraud syndicate of 500+ delivery workers can coordinate through social channels, spoof GPS at scale, and trigger mass false payouts in narrow windows. Traditional parametric insurance models that rely only on external triggers (weather, traffic, incident feeds) are vulnerable to this style of coordinated attack.
+
+GigShield-AI introduces a layered forensic + parametric defense system that validates whether a worker was truly stranded and whether the device evidence is physically plausible.
+
+> Parametric-only asks: "Did it rain?"  
+> GigShield asks: "Was a human truly stranded, and can the phone prove it?"
+
+---
+
+## Table of Contents
+
+- [The Critical Vulnerability](#the-critical-vulnerability)
+- [GigShield-AI Defense Strategy](#gigshield-ai-forensic--parametric-defense)
+- [System Architecture](#system-architecture-diagram)
+- [Claim Decision Flow](#claim-decision-flow)
+- [Claim Processing Sequence](#claim-processing-sequence-runtime)
+- [Ring Detection Logic](#ring-detection-logic-coordinated-fraud-signal)
+- [Real Attack Scenarios](#real-attack-scenarios--defense-breakdown)
+- [Decision Thresholds](#decision-thresholds-transparent--auditable)
+- [Economic Resilience](#economic-resilience--liquidity-protection)
+- [Fraud Response Playbook](#fraud-incident-response-playbook)
+- [Why GigShield Wins](#why-gigshield-defeats-spoofing-better-than-simple-parametric-models)
+- [Compliance Trail](#compliance--audit-ready-decision-trail)
+- [Success Criteria](#success-criteria-against-the-500-worker-attack)
 
 ---
 
 ## The Critical Vulnerability
 
-A sophisticated syndicate of 500+ delivery workers has weaponized GPS-spoofing apps to fake their locations and trigger mass false payouts from parametric insurance platforms. Organized via Telegram, resting safely at home, they've successfully drained multiple beta platforms by flooding the system with coordinated false weather-emergency claims within impossibly narrow time windows.
+A sophisticated syndicate of 500+ delivery workers has weaponized GPS-spoofing apps to fake their locations and trigger mass false payouts from parametric insurance platforms. Organized via Telegram and operating remotely, these workers can drain liquidity by flooding coordinated weather-emergency claims inside impossibly narrow time windows.
 
-**The Threat is Real. The Clock is Ticking.**
+**The threat is real. The clock is ticking.**
 
 ---
 
 ## GigShield-AI: Forensic + Parametric Defense
 
-While basic parametric insurance relies on external triggers (weather APIs, traffic feeds), **GigShield uses forensic device intelligence + multi-signal risk scoring** to differentiate genuinely stranded workers from spoofing bad actors—even when external data is compromised.
-
-> **The difference:** Parametric systems ask "Did it rain?". GigShield asks: "Was a human truly stranded, and can the phone prove it?"
-
----
-
-## Adversarial Defense & Anti-Spoofing Strategy
+While basic parametric insurance relies on external triggers (weather APIs, traffic feeds), **GigShield uses forensic device intelligence + multi-signal risk scoring** to differentiate genuine claims from spoofed attacks, even when external data is compromised.
 
 ### Why This Pivot Is Needed
-Basic GPS checks are no longer enough. A coordinated fraud ring can spoof location and trigger false weather payouts at scale. GigShield-AI uses a layered, evidence-based risk model so payout decisions are based on behavioral and environmental consistency, not just a single location signal.
 
-### 1️⃣ The Differentiation
-**How we separate a genuinely stranded delivery partner from a spoofing bad actor:**
+Basic GPS checks are no longer enough. A coordinated fraud ring can spoof location and trigger false weather payouts at scale. GigShield-AI applies layered, evidence-based risk modeling so payout decisions are based on behavioral and environmental consistency, not one location signal.
 
-1. **Multi-signal trust scoring (not single-signal GPS)** 🎯
-	Each claim is evaluated by an AI risk engine that combines independent signals: movement realism, device integrity, weather exposure match, and account behavior.
+### 1) The Differentiation
 
-2. **Temporal consistency check** ⏱️
-	A real stranded worker usually shows a believable sequence over time (normal route → weather escalation → slowed/stopped movement → claim). A spoofed claim often shows abrupt, pattern-breaking jumps or suspiciously clean trajectories.
+1. **Multi-signal trust scoring (not single-signal GPS)**
+	- AI risk engine combines movement realism, device integrity, weather exposure match, and account behavior.
 
-3. **Route-context validation** 🗺️
-	Claimed coordinates are compared with expected delivery corridor behavior, road graph logic, and local weather-cell progression. If a user is "inside" a red-alert polygon but behavior does not match on-ground disruption, risk score increases.
+2. **Temporal consistency check**
+	- Genuine workers show believable sequences (route -> weather escalation -> slowed/stopped movement -> claim).
+	- Spoofed claims often show abrupt jumps or suspiciously clean trajectories.
 
-4. **Population-level anomaly detection** 📊
-	We run cluster analytics to detect coordinated patterns (many accounts with near-identical timing, similar device signatures, and synchronized claim windows). This identifies syndicate behavior that individual claim checks can miss.
+3. **Route-context validation**
+	- Claimed coordinates are compared against delivery corridor behavior, road-graph logic, and weather-cell progression.
+	- If a worker is "inside" a red-alert polygon without matching disruption behavior, risk increases.
 
-5. **Decision tiers instead of binary approve/reject** 🚦
-	- ✅ Low risk: instant payout.
-	- ⚠️ Medium risk: step-up verification and rapid review.
-	- 🔴 High risk: temporary hold, deeper fraud analysis, and ring-level investigation.
+4. **Population-level anomaly detection**
+	- Cluster analytics detects coordinated timing, similar device signatures, and synchronized claim windows.
+	- Captures syndicate behavior that claim-by-claim checks miss.
 
-### 2️⃣ The Data (Beyond Basic GPS)
-**Key data points used to detect spoofing and coordinated fraud:**
+5. **Decision tiers instead of binary approve/reject**
+	- **Low risk:** instant payout.
+	- **Medium risk:** step-up verification + rapid review.
+	- **High risk:** temporary hold + deep fraud analysis.
 
-1. **Sensor fusion signals** 📱
+### 2) The Data (Beyond Basic GPS)
+
+1. **Sensor fusion signals**
 	- Accelerometer/gyroscope consistency with claimed movement.
-	- Heading and speed continuity (physically plausible transitions).
-	- Altitude and barometric trends where available.
+	- Heading/speed continuity with physically plausible transitions.
+	- Altitude/barometric trends (where available).
 
-2. **Device integrity and telemetry** 🔒
-	- Mock location detection flags.
-	- Root/jailbreak risk indicators.
+2. **Device integrity and telemetry**
+	- Mock-location flags.
+	- Root/jailbreak indicators.
 	- Emulator/virtual environment fingerprints.
-	- App attestation confidence score.
+	- App attestation confidence.
 
-3. **Network and session intelligence** 🌐
-	- IP geolocation drift versus claimed location.
+3. **Network and session intelligence**
+	- IP geolocation drift vs claimed location.
 	- Rapid device/account switching patterns.
 	- Proxy/VPN abuse signals.
 	- Session timing irregularities.
 
-4. **Environmental corroboration** 🌦️
-	- Hyperlocal weather severity at time of claim.
-	- Radar nowcast timeline alignment.
+4. **Environmental corroboration**
+	- Hyperlocal weather severity at claim timestamp.
+	- Radar nowcast alignment.
 	- Nearby outage/traffic disruption context.
 
-5. **Behavioral and graph-based fraud signals** 🕸️
+5. **Behavioral and graph-based fraud signals**
 	- Claim timing similarity across users.
-	- Shared device fingerprints across multiple accounts.
-	- Telegram-style ring indicators: burst claims from tightly connected account clusters.
-	- Historical reliability score for each worker (with decay so old issues do not permanently punish users).
+	- Shared device fingerprints across accounts.
+	- Burst claims from tightly connected account clusters.
+	- Historical reliability score with decay (no permanent punishment for old issues).
 
-### 3️⃣ The UX Balance (Fraud Defense Without Harming Honest Workers)
-**Our flagged-claim workflow protects the liquidity pool while preserving fairness for genuine workers:**
+### 3) The UX Balance (Fraud Defense Without Harming Honest Workers)
 
-1. **Human-friendly, transparent status flow** 💬
-	If flagged, the user sees: "Under quick safety verification" instead of "Rejected." We clearly show expected review time and next step.
+1. **Human-friendly status flow**
+	- Flagged claims show "Under quick safety verification" (not "Rejected").
+	- Users get clear expected review time and next step.
 
-2. **Fast step-up verification** ⚡
-	For medium-risk claims, the app requests lightweight proof options (choose one):
+2. **Fast step-up verification**
+	- Medium-risk claims can complete one lightweight option:
 	- Short in-app live location continuity window.
 	- Recent delivery task metadata confirmation.
-	- Optional photo/self-check prompt where policy allows.
-	This avoids forcing one rigid method in poor network conditions.
+	- Optional photo/self-check where policy allows.
 
-3. **Grace mode for bad-weather connectivity drops** 🌧️
-	If network quality is degraded in a severe weather zone, claims enter a grace queue with delayed but prioritized review, not auto-denial.
+3. **Grace mode for weather-related connectivity drops**
+	- Degraded-network claims in severe weather enter prioritized delayed review, not auto-denial.
 
-4. **Partial relief for uncertain cases** 💰
-	Where confidence is mixed, provide controlled interim support (small capped emergency advance), then settle full payout after final verification.
+4. **Partial relief for uncertain cases**
+	- Mixed-confidence cases receive capped interim emergency support, then final settlement after verification.
 
-5. **Explainability and appeal** ⚖️
-	Every non-instant decision stores machine-readable reason codes and a worker-friendly explanation. Users can appeal in-app, and successful appeals retrain the model to reduce future false flags.
+5. **Explainability and appeal**
+	- Every non-instant decision stores machine-readable reason codes + worker-friendly explanation.
+	- Appeals feed model improvements and reduce future false flags.
 
-6. **Fairness guardrails** 📏
-	We monitor false-positive rate by region, device class, and connectivity quality. Thresholds are calibrated to minimize harm to honest workers while maintaining fraud resistance.
+6. **Fairness guardrails**
+	- False-positive monitoring by region, device class, and connectivity quality.
+	- Threshold calibration minimizes harm while maintaining fraud resistance.
 
-### 🎯 Operational Outcome Under Attack
-With this architecture, a 500-worker spoofing ring is less likely to drain the pool because synchronized fake claims trigger cluster-level anomaly controls, while genuine stranded workers continue to receive timely support through low-friction, fairness-aware verification.
+### Operational Outcome Under Attack
 
-## 🏗️ System Architecture Diagram
+With this architecture, a 500-worker spoofing ring is unlikely to drain the pool because synchronized fake claims trigger cluster-level controls, while genuine stranded workers continue to receive timely support through low-friction, fairness-aware verification.
+
+---
+
+## System Architecture Diagram
 
 ### Layered Defense Architecture (5-Layer Independent Check System)
 
+```mermaid
+%%{init: {
+	"theme": "base",
+	"themeVariables": {
+		"background": "#0f172a",
+		"primaryTextColor": "#e5e7eb",
+		"lineColor": "#94a3b8",
+		"fontSize": "14px"
+	},
+	"flowchart": {
+		"curve": "linear",
+		"nodeSpacing": 46,
+		"rankSpacing": 58,
+		"padding": 12,
+		"useMaxWidth": true
+	}
+}}%%
+flowchart TD
+	I["1. Signal Ingestion<br/>GPS + Motion<br/>Device Signals<br/>Network/Session<br/>Weather + History"]
+	F["2. Feature Intelligence<br/>Route Plausibility<br/>Device Integrity<br/>Behavior Patterns"]
+	R["3. Risk Scoring<br/>Individual Risk<br/>Cluster Ring Risk"]
+	D["4. Decision Orchestration<br/>Auto-Approve<br/>Step-Up Verify<br/>Investigate & Hold"]
+	O["5. Human Oversight + Appeals<br/>Fraud Console<br/>Explainability<br/>Appeal Loop"]
+
+	I --> F --> R --> D --> O
+
+	classDef ingestion fill:#0b3b8a,stroke:#60a5fa,color:#eaf2ff,stroke-width:1.4px,rx:10,ry:10;
+	classDef feature fill:#14532d,stroke:#4ade80,color:#ecfdf5,stroke-width:1.4px,rx:10,ry:10;
+	classDef risk fill:#7c2d12,stroke:#fb923c,color:#fff7ed,stroke-width:1.4px,rx:10,ry:10;
+	classDef decision fill:#7f1d1d,stroke:#f87171,color:#fef2f2,stroke-width:1.4px,rx:10,ry:10;
+	classDef oversight fill:#334155,stroke:#cbd5e1,color:#f8fafc,stroke-width:1.4px,rx:10,ry:10;
+
+	class I ingestion;
+	class F feature;
+	class R risk;
+	class D decision;
+	class O oversight;
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ 5) HUMAN OVERSIGHT + APPEALS LAYER                          │
-│    (Fraud team console, explainability, appeal loop)        │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────┐
-│ 4) DECISION ORCHESTRATION LAYER                             │
-│    ├─ Auto-Approve Lane (low risk)                          │
-│    ├─ Step-Up Verification Lane (medium risk)               │
-│    └─ Investigate & Hold Lane (high risk)                   │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────┐
-│ 3) RISK SCORING LAYER                                       │
-│    ├─ Individual Risk Score (claim-level)                   │
-│    └─ Cluster Risk Score (ring-level coordinated fraud)     │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────┐
-│ 2) FEATURE INTELLIGENCE LAYER                               │
-│    ├─ Route plausibility & movement continuity             │
-│    ├─ Device integrity & spoofing likelihood               │
-│    └─ Historical reliability & behavior patterns            │
-└──────────────────────┬──────────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────────┐
-│ 1) SIGNAL INGESTION LAYER                                   │
-│    ├─ GPS + Motion Sensors (accelerometer, gyroscope)      │
-│    ├─ Device Integrity Signals                              │
-│    ├─ Network & Session Metadata                            │
-│    ├─ Weather Feeds & Environmental Data                    │
-│    └─ Historical Account & Behavioral Events                │
-└─────────────────────────────────────────────────────────────┘
-```
+
+---
 
 ## Claim Decision Flow
 
+```mermaid
+%%{init: {
+	"theme": "base",
+	"themeVariables": {
+		"background": "#0f172a",
+		"primaryTextColor": "#e5e7eb",
+		"lineColor": "#94a3b8",
+		"fontSize": "13px"
+	},
+	"flowchart": {
+		"curve": "linear",
+		"nodeSpacing": 42,
+		"rankSpacing": 52,
+		"padding": 12,
+		"useMaxWidth": true
+	}
+}}%%
+flowchart TD
+	A(["Claim Received<br/>with Sensor Bundle"])
+	B["Movement Continuity Check<br/>Accelerometer + GPS Breadcrumbs"]
+	C{"Physically Plausible?"}
+	D["Movement Score<br/>LOW"]
+	E["Movement Score<br/>HIGH<br/>Impossible Speed or Jump"]
+
+	F["Device Integrity Check<br/>Mock Location<br/>Root/Jailbreak<br/>Emulator Flags"]
+	G{"Attestation Passes?"}
+	H["Device Score<br/>LOW"]
+	I["Device Score<br/>HIGH"]
+
+	J["Environmental Corroboration<br/>Hyperlocal Weather<br/>Nearby Disruption Data"]
+	K{"Environment Matches<br/>Claimed Disruption?"}
+	L["Environment<br/>CORROBORATED"]
+	M["Environment<br/>INCONSISTENT"]
+
+	N["Load Historical Reliability Score"]
+	O["Compute Individual Risk Score (0-10)<br/>Movement 30% | Device 25%<br/>Environment 20% | History 15%<br/>Behavior 10%"]
+	P["Cluster Check<br/>Recent Claims in Same Geo-cell<br/>Last 15 min, Radius < 2 km"]
+	Q{"5+ Claims with Shared<br/>Fingerprints or Sync Timestamps?"}
+	R["Elevate Cluster Risk<br/>Trigger Geo-cell Circuit Breaker"]
+	S["Cluster Score<br/>NORMAL"]
+	T(["Route to Decision Engine"])
+
+	A --> B --> C
+	C -->|Yes| D
+	C -->|No| E
+	D --> F
+	E --> F
+	F --> G
+	G -->|Yes| H
+	G -->|No| I
+	H --> J
+	I --> J
+	J --> K
+	K -->|Yes| L
+	K -->|No| M
+	L --> N
+	M --> N
+	N --> O --> P --> Q
+	Q -->|Yes| R --> T
+	Q -->|No| S --> T
+
+	classDef ingestion fill:#0b3b8a,stroke:#60a5fa,color:#eaf2ff,stroke-width:1.3px,rx:10,ry:10;
+	classDef feature fill:#14532d,stroke:#4ade80,color:#ecfdf5,stroke-width:1.3px,rx:10,ry:10;
+	classDef risk fill:#7c2d12,stroke:#fb923c,color:#fff7ed,stroke-width:1.3px,rx:10,ry:10;
+	classDef decision fill:#7f1d1d,stroke:#f87171,color:#fef2f2,stroke-width:1.3px,rx:10,ry:10;
+	classDef oversight fill:#334155,stroke:#cbd5e1,color:#f8fafc,stroke-width:1.3px,rx:10,ry:10;
+
+	class A,B ingestion;
+	class F,J,N feature;
+	class D,E,H,I,L,M,O,P,Q,R,S risk;
+	class C,G,K,T decision;
 ```
-WORKER SUBMITS CLAIM
-        │
-        ▼
-FETCH MULTI-SOURCE DATA (real-time)
-├─ GPS + Motion sensors
-├─ Device Integrity Check
-├─ Network/Session Metadata
-├─ Hyperlocal Weather Data
-└─ Account History & Behavior
-        │
-        ▼
-COMPUTE RISK SCORES
-├─ Individual Risk Score
-│  (movement realism, device trust, route context)
-│
-└─ Cluster Risk Score
-   (coordinated timing, shared fingerprints, ring detection)
-        │
-        ┌─────────────────────────────────────────┐
-        │                                         │
-        ▼                                         ▼
-  Individual Score?                        Cluster Score?
-        │                                         │
-   ┌────┴────┬────────┐                  ┌───────┴──────┐
-   │         │        │                  │              │
-  LOW     MED       HIGH                LOW           ELEVATED
-   │      │         │                  │               │
-   ▼      ▼         ▼                  ▼               ▼
-AUTO-  STEP-UP  INVESTIGATE&         ✓OK          ENHANCED
-APPROVE VERIFY   HOLD+ANALYST                     VERIFICATION
-   │      │        │                               (geo-cell
-   │      │        │                                circuit
-   ▼      ▼        ▼                                breaker)
-   └──────┴────────┘
-          │
-          ▼
-  APPLY GRACE MODE IF NEEDED
-  (bad connectivity in weather zone)
-          │
-          ▼
-  MAKE PAYOUT DECISION + EXPLANATION
-          │
-          ▼
-  LOG OUTCOME FOR MODEL CALIBRATION
+
+---
+
+## Claim Processing Sequence (Runtime)
+
+```mermaid
+%%{init: {
+	"theme": "base",
+	"themeVariables": {
+		"background": "#0f172a",
+		"primaryTextColor": "#e5e7eb",
+		"lineColor": "#94a3b8",
+		"fontSize": "13px",
+		"actorBorder": "#60a5fa",
+		"actorBkg": "#0b3b8a",
+		"actorTextColor": "#eaf2ff",
+		"activationBorderColor": "#fb923c",
+		"activationBkgColor": "#7c2d12",
+		"signalColor": "#cbd5e1"
+	},
+	"sequence": {
+		"diagramMarginX": 40,
+		"diagramMarginY": 18,
+		"actorMargin": 54,
+		"width": 180,
+		"height": 70,
+		"boxMargin": 12,
+		"boxTextMargin": 8,
+		"noteMargin": 12,
+		"messageMargin": 24,
+		"mirrorActors": false,
+		"bottomMarginAdj": 1,
+		"useMaxWidth": true
+	}
+}}%%
+sequenceDiagram
+	autonumber
+	actor Worker as Delivery Worker
+	participant App as GigShield App
+	participant Ingest as Signal Ingestion
+	participant Risk as Risk Scorer
+	participant Decision as Decision Engine
+	participant Verify as Verification Service
+	participant Payout as Payout System
+	participant Audit as Audit Logger
+
+	Worker->>App: Submit disruption claim
+	App->>Ingest: GPS + sensor bundle
+	App->>Ingest: Device attestation token
+	App->>Ingest: Network/session metadata
+
+	Ingest->>Ingest: Validate sensor continuity
+	Ingest->>Risk: Send normalized feature set
+	Risk->>Risk: Compute individual risk
+	Risk->>Risk: Compute cluster risk
+	Risk->>Decision: Risk scores + signal breakdown
+
+	alt Individual < 2.5 AND Cluster < 3.0
+		Decision->>Payout: Auto-approve
+		Payout->>Worker: Instant payout
+		Decision->>Audit: LOG | AUTO_APPROVED
+	else Individual 2.5-6.0 OR Cluster 3.0-6.5
+		Decision->>Verify: Request step-up proof
+		Verify->>Worker: Lightweight prompt
+		Worker->>Verify: Submit proof
+		Verify->>Decision: Verification result
+		Decision->>Payout: Approve if verified
+		Payout->>Worker: Payout within 15 min
+		Decision->>Audit: LOG | STEP_UP_VERIFIED
+	else Individual > 6.0 OR Cluster > 6.5
+		Decision->>Decision: Hold + analyst alert
+		Decision->>Audit: LOG | INVESTIGATE_HOLD
+		Decision->>Worker: Quick safety check in progress
+	end
 ```
+
+---
 
 ## Ring Detection Logic (Coordinated Fraud Signal)
 
-When a burst of claims arrives within a narrow time window:
+State-driven cluster escalation under coordinated bursts:
 
-```
-CLUSTER ANALYSIS TRIGGERS IF:
-├─ 5+ claims within 15 minutes
-├─ From geographically tight area (< 2km² cell)
-├─ With shared device fingerprints or IP patterns
-├─ And synchronized timestamps
-     │
-     ▼
-RING RISK ELEVATION
-├─ Individual scores are re-weighted upward
-├─ Geo-cell enters enhanced verification mode
-├─ Payout throttle engages (preserve liquidity)
-└─ Fraud analyst gets alert with cluster graph
-     │
-     ▼
-GENUINE CLAIMS STILL MOVE FAST
-(low-risk workers in that cell bypass step-up)
+```mermaid
+%%{init: {
+	"theme": "base",
+	"themeVariables": {
+		"background": "#0f172a",
+		"primaryTextColor": "#e5e7eb",
+		"lineColor": "#94a3b8",
+		"fontSize": "13px"
+	},
+	"flowchart": {
+		"curve": "linear",
+		"nodeSpacing": 48,
+		"rankSpacing": 60,
+		"padding": 12,
+		"useMaxWidth": true
+	}
+}}%%
+flowchart TD
+	S(["Start Cluster Monitoring"])
+	N["Normal State<br/>Process Claims Individually<br/>Cluster Score 0.0-3.0"]
+	T{"5+ Claims in 15 min<br/>from Same 2 km Cell?"}
+	Y["Yellow Alert<br/>Enhanced Verification in Cell<br/>Cluster Score 3.0-6.5"]
+	F{"Shared Device Fingerprints<br/>or IP Pattern Detected?"}
+	R["Red Alert<br/>Circuit Breaker Active<br/>Payout Throttle Engaged<br/>Cluster Score 6.5-10.0"]
+	I["Investigating<br/>Manual Fraud Review<br/>Low-risk Workers Still Process"]
+	O{"Investigation Outcome"}
+	B["Banned<br/>Ring Confirmed<br/>Fingerprints Blocked"]
+	E(["Incident Logged<br/>Model Retrained"])
 
-SUSPICIOUS BURST GETS HELD & INVESTIGATED
-(risk-sorted, not auto-rejected)
+	S --> N --> T
+	T -->|No| N
+	T -->|Yes| Y
+	Y --> F
+	F -->|No: false burst| N
+	F -->|Yes| R --> I --> O
+	O -->|False alarm| N
+	O -->|Ring confirmed| B --> E
+
+	classDef ingestion fill:#0b3b8a,stroke:#60a5fa,color:#eaf2ff,stroke-width:1.3px,rx:10,ry:10;
+	classDef feature fill:#14532d,stroke:#4ade80,color:#ecfdf5,stroke-width:1.3px,rx:10,ry:10;
+	classDef risk fill:#7c2d12,stroke:#fb923c,color:#fff7ed,stroke-width:1.3px,rx:10,ry:10;
+	classDef decision fill:#7f1d1d,stroke:#f87171,color:#fef2f2,stroke-width:1.3px,rx:10,ry:10;
+	classDef oversight fill:#334155,stroke:#cbd5e1,color:#f8fafc,stroke-width:1.3px,rx:10,ry:10;
+
+	class S,N ingestion;
+	class Y,I feature;
+	class R,B,E risk;
+	class T,F,O decision;
 ```
+
+---
 
 ## Real Attack Scenarios & Defense Breakdown
 
-### Scenario 1: The Synchronized Location Spoof Ring (500 workers, same coordinates)
+### Scenario 1: Synchronized Location Spoof Ring (500 workers, same coordinates)
 
-**Attack Method:**
-- 500 workers use advanced GPS spoofing apps to claim they are all at coordinates (12.9352° N, 77.6245° E) = a flood zone.
-- All submit claims within 10 minutes, exact same timestamp, claiming ₹500 each.
-- Total exposure: ₹250,000.
+**Attack Method**
+- 500 workers spoof coordinates (12.9352 N, 77.6245 E) as a flood zone.
+- Claims submitted inside 10 minutes with identical timing.
+- Claimed amount: INR 500 each.
+- Exposure: INR 250,000.
 
-**GigShield Defense:**
+**GigShield Defense**
 
-1. **Signal Layer Catches It:**
-   - 500 claims from 500 distinct devices arrive at identical location with zero prior movement history into that area.
-   - Barometric sensor data shows claims originating from homes (sea-level altitude + furniture vibration pattern).
-   - GPS confidence scores all spike to 100% (too perfect—humans have jitter).
+1. **Signal layer catches anomalies**
+	- 500 claims from distinct devices at identical location with no prior movement into area.
+	- Barometric sensor data suggests indoor/home origin signatures (sea-level altitude plus furniture-vibration-like stability).
+	- GPS confidence spikes to near-perfect values across all claims, which is statistically suspicious.
 
-2. **Individual Risk Score Jumps:**
-   - Movement continuity check: All 500 show zero GPS history for 30 minutes before claim. No route leading into the flood zone.
-   - Device integrity: All devices flagged for mock-location app or root access detected on 85%+ of them.
-   - Individual score: **9.2 / 10.0 (CRITICAL)** for each claim → all auto-held.
+2. **Individual risk score spikes**
+	- Zero route continuity into flood zone across the previous 30 minutes.
+	- Mock-location app or root-access indicators appear on 85%+ of devices.
+	- Individual score: **9.2 / 10.0 (critical)**.
 
-3. **Cluster Score Explodes:**
-   - 500 claims in 10 minutes from < 0.5 km² cell with identical timestamps = extreme anomaly.
-   - Graph ML detects 150 shared BSSIDs, MAC address patterns consistent with botnet/emulator clusters.
-   - Cluster score: **9.7 / 10.0 (RING DETECTED)** → geo-cell circuit breaker activates.
+3. **Cluster score escalates**
+	- 500 claims in 10 minutes in sub-0.5 km2 zone with synchronized timing.
+	- Graph analytics detects 150 shared BSSID patterns and infrastructure overlap consistent with coordinated ring activity.
+	- Cluster score: **9.7 / 10.0 (ring detected)**.
 
-4. **Outcome:**
-   - **Zero payouts processed.** All 500 held in investigate lane.
-   - Fraud analyst receives alert with cluster graph in seconds.
-   - Liquidity pool protected. ₹250,000 saved.
-
----
-
-### Scenario 2: The Stealth Distributed Attack (50 workers, subtle spoofing over 48 hours)
-
-**Attack Method:**
-- 50 different workers spread across city.
-- Each submits 4-5 claims over 48 hours, spoofing minor GPS drifts (e.g., ±200m variations).
-- Each claim individually looks plausible; only together do they show pattern.
-- Try to drain ₹5,000 total in small, hard-to-detect increments.
-
-**GigShield Defense:**
-
-1. **Temporal Consistency Check Triggers:**
-   - Worker A: Claims disruption at 2 pm with GPS at (12.935, 77.624). History shows normal route 30min prior ✓
-   - Worker A: Claims again same location at 4 pm. Motion data shows 0 movement between claims (impossible given traffic disruption claims).
-   - Worker A: Claims 3rd time at 6 pm, exact same zone. Barometric altitude steady at 950m (physically impossible if weather disrupting traffic).
-   - Individual score escalates: 3.2 → 5.1 → 7.8 (flagged on 3rd claim).
-
-2. **Behavioral Pattern Detection:**
-   - System notices Workers A, B, C, D, E all show identical claim intervals (2pm, 4pm, 6pm, 8pm).
-   - All claim ~same 500m zone.
-   - All have device fingerprints matching known fraud subnet.
-   - Cluster score: **7.5 / 10.0** → enhanced verification triggered across this sub-ring.
-
-3. **Outcome:**
-   - Claims 1-2 from each worker go to step-up verification.
-   - Claims 3+ auto-held.
-   - Workers asked for liveness proof (in-app selfie with timestamp).
-   - 48 of 50 workers fail (cannot provide legitimate proof).
-   - Projected drain: ₹5,000 → **actual payout: ₹200 (only 2 legitimate claims).**
+4. **Outcome**
+	- **Zero payouts processed.**
+	- Claims routed to investigate lane.
+	- Fraud team alerted in seconds.
+	- Liquidity preserved; INR 250,000 protected.
 
 ---
 
-### Scenario 3: The High-Velocity Single-Worker Attack
+### Scenario 2: Stealth Distributed Attack (50 workers, subtle spoofing over 48 hours)
 
-**Attack Method:**
-- One sophisticated attacker with excellent device spoofing submits 20 claims in 5 hours across different zones.
-- Each claim looks individually valid but pattern shows impossible physics.
+**Attack Method**
+- 50 workers distributed city-wide.
+- 4 to 5 claims each over 48 hours.
+- Minor GPS drifts (for example +/-200m) to appear plausible.
+- Goal: drain INR 5,000 in small increments.
 
-**GigShield Defense:**
+**GigShield Defense**
 
-1. **Route Physics Catches Impossibility:**
-   - Claim 1: Zone A, 12:00 pm, 15 km away from depot.
-   - Claim 2: Zone B, 12:15 pm, 25 km away (5 km in 15 minutes—impossible on a delivery bike).
-   - Claim 3: Zone A again, 12:30 pm (teleported back 25 km in 15 minutes).
-   - Movement continuity score: **0.1 / 10.0 (PHYSICALLY IMPOSSIBLE).**
+1. **Temporal consistency triggers**
+	- Example sequence: Worker A claims disruption at 2 PM, repeats at 4 PM and 6 PM from the same zone with implausible movement continuity.
+	- Barometric profile remains unnaturally steady despite claimed severe disruption context.
+	- Individual score escalates over repeated submissions: **3.2 -> 5.1 -> 7.8**.
 
-2. **Sensor Fusion Detects Cheating:**
-   - Accelerometer data for "movement between zones" is missing.
-   - GPS breadcrumb trail is suspiciously clean (no realistic jitter, turns, or acceleration profile).
-   - Device integrity: Mock location app + VPN detected.
-   - Individual score: **9.8 / 10.0.**
+2. **Behavioral pattern detection**
+	- Workers A-E show synchronized intervals (2 PM, 4 PM, 6 PM, 8 PM) and tightly overlapping zone patterns.
+	- Device fingerprints align with a known suspicious subnet.
+	- Cluster score: **7.5 / 10.0**, enhanced verification triggered.
 
-3. **Outcome:**
-   - All 20 claims held on first claim submission.
-   - Attacker locked for 48-hour fraud investigation.
-   - Zero payout.
+3. **Outcome**
+	- Early claims moved to step-up verification.
+	- Later claims held.
+	- 48 of 50 workers fail liveness verification.
+	- Projected drain: INR 5,000 -> **actual payout: INR 200**.
+
+---
+
+### Scenario 3: High-Velocity Single-Worker Attack
+
+**Attack Method**
+- One advanced attacker submits 20 claims in 5 hours across zones.
+- Individually plausible claims but impossible physics over sequence.
+
+**GigShield Defense**
+
+1. **Route physics checks fail**
+	- Example pattern: Zone A at 12:00 PM -> Zone B at 12:15 PM -> Zone A again at 12:30 PM, implying impossible travel/reversal behavior.
+	- Movement continuity score: **0.1 / 10.0**.
+
+2. **Sensor fusion detects manipulation**
+	- Missing realistic accelerometer signatures.
+	- Over-clean GPS trails.
+	- Mock-location and VPN indicators.
+	- Individual score: **9.8 / 10.0**.
+
+3. **Outcome**
+	- Claims held from first submission.
+	- 48-hour fraud investigation lock.
+	- Zero payout.
 
 ---
 
 ## Decision Thresholds (Transparent & Auditable)
 
-GigShield uses explicit, tunable risk thresholds for reproducibility and regulatory compliance:
+### Individual Claim Risk Score (0-10)
 
-```
-INDIVIDUAL CLAIM RISK SCORE (0–10 scale)
-├─ 0–2.5     → AUTO-APPROVE LANE
-│              (Instant payout, no verification, high-velocity path)
-│
-├─ 2.5–6.0   → STEP-UP VERIFICATION LANE
-│              (Lightweight proof required, 15-minute review window)
-│
-└─ 6.0–10.0  → INVESTIGATE & HOLD LANE
-                (24-hour analyst review, graph ML investigation)
+| Range | Lane | Action |
+|---|---|---|
+| 0-2.5 | Auto-Approve | Instant payout, no verification |
+| 2.5-6.0 | Step-Up Verification | Lightweight proof, 15-minute review target |
+| 6.0-10.0 | Investigate and Hold | Analyst review + graph investigation |
 
-CLUSTER RISK SCORE (0–10 scale)
-├─ 0–3.0     → GREENLIGHT (cluster checked, proceed individually)
-├─ 3.0–6.5   → YELLOW ALERT (enhanced verification for all claims in cell)
-└─ 6.5–10.0  → RED ALERT (geo-cell circuit breaker, payout throttle)
+### Cluster Risk Score (0-10)
 
-SIGNAL WEIGHTS IN RISK COMPUTATION
-├─ Movement Continuity            30%  (most reliable, hard to fake)
-├─ Device Integrity               25%  (hardware/OS deep checks)
-├─ Environmental Corroboration    20%  (weather + real-world disruption)
-├─ Historical Reliability         15%  (worker's long-term track record)
-└─ Behavioral Anomaly             10%  (unusual timing, frequency, zones)
-```
+| Range | State | Action |
+|---|---|---|
+| 0-3.0 | Greenlight | Proceed with individual lane decisions |
+| 3.0-6.5 | Yellow Alert | Enhanced verification in impacted cell |
+| 6.5-10.0 | Red Alert | Geo-cell circuit breaker + payout throttle |
+
+### Signal Weights in Risk Computation
+
+| Signal | Weight | Rationale |
+|---|---:|---|
+| Movement Continuity | 30% | Hardest signal to fake consistently |
+| Device Integrity | 25% | Deep hardware/OS trust indicators |
+| Environmental Corroboration | 20% | Real-world condition alignment |
+| Historical Reliability | 15% | Long-term behavior, decayed over time |
+| Behavioral Anomaly | 10% | Timing/frequency/zone pattern shifts |
 
 ---
 
@@ -348,74 +515,68 @@ SIGNAL WEIGHTS IN RISK COMPUTATION
 
 ### Daily Liquidity Guardrails
 
-By design, GigShield never allows catastrophic pool depletion:
-
 | Metric | Threshold | Action |
-|--------|-----------|--------|
-| **Hourly Payout Rate** | > ₹50,000/hr | Payout throttle engages; medium/high-risk claims enter 30-min queue |
-| **Daily Fraud Exposure** | > ₹500,000 (projected) | Entire platform enters "Defense Mode"; all claims ≥ 5.0 risk held for 2-hr analyst batch |
-| **Ring Velocity** | > 20 coordinated claims/min | Geo-cell circuit breaker activates; that cell's claims queued, all others proceed normally |
-| **Pool Depletion Rate** | > 5% of total capital daily | Emergency hold on all claims ≥ 4.0 risk; CEO notified for manual decision |
+|---|---|---|
+| Hourly Payout Rate | > INR 50,000 per hour | Payout throttle; medium/high-risk queue for 30 minutes |
+| Daily Fraud Exposure | > INR 500,000 projected | Defense mode; claims >= 5.0 risk held for analyst batch |
+| Ring Velocity | > 20 coordinated claims per minute | Geo-cell circuit breaker activates |
+| Pool Depletion Rate | > 5% of total capital per day | Emergency hold on claims >= 4.0 risk + executive escalation |
 
 ### Payout Distribution Mechanics
 
-Payouts are **not first-come-first-served**. Instead:
+Payouts are not first-come-first-served:
 
-1. **Low-risk genuine claims** (score < 2.5) always process in real-time.
-2. **Medium-risk verified claims** (pass step-up) grouped and settled in hourly batches (prevents timing attacks).
-3. **High-risk claims** enter analyst queue; no blanket auto-hold (fairness).
-
-This ensures liquidity protection without abandoning legitimate workers.
+1. Low-risk genuine claims (score < 2.5) process in real time.
+2. Medium-risk claims that pass step-up settle in hourly batches.
+3. High-risk claims enter analyst queue (risk-sorted, not blanket rejected).
 
 ---
 
 ## Fraud Incident Response Playbook
 
-When an attack is detected, the system automatically executes:
-
-### Tier 1: Automated Detection & Containment (< 1 second)
-- Cluster alert fires
-- Matching claims auto-held
-- Payout throttle engages
-- Analyst dashboard flags the incident
+### Tier 1: Automated Detection and Containment (< 1 second)
+- Cluster alert fires.
+- Matching claims auto-held.
+- Payout throttle engages.
+- Analyst dashboard incident flag appears.
 
 ### Tier 2: Analyst Triage (< 5 minutes)
-- Fraud operations team reviews cluster graph
-- Determines scope: is this localized, city-wide, platform-wide?
-- Manually investigates worker IDs and device fingerprints
-- Initiates coordination with mobile carriers / device OS vendors if needed
+- Fraud ops reviews cluster graph.
+- Scope classified (local, city-wide, or platform-wide).
+- Worker IDs and device fingerprints investigated.
+- External coordination with carriers/platform vendors if needed.
 
-### Tier 3: Containment & Recovery (< 30 minutes)
-- Temporary IP/device fingerprint ban if botnet detected
-- Geo-cell lockdown if coordinated spoofing confirmed
-- Communicate transparently to affected *genuine* workers: "Increased security checks in your zone; your legit claim will be reviewed in next batch."
+### Tier 3: Containment and Recovery (< 30 minutes)
+- Temporary IP/device bans for botnet-like signatures.
+- Geo-cell lockdown for confirmed coordinated spoofing.
+- Transparent message to genuine workers in impacted zones.
 
 ### Tier 4: Post-Incident Calibration
-- Analyze what signals failed (if any)
-- Retrain risk model with new attack data
-- Update thresholds if false-positive rate spikes
-- Log incident in compliance audit trail
+- Analyze missed signals.
+- Retrain model with fresh attack data.
+- Recalibrate thresholds if false positives rise.
+- Store full incident for compliance and replay audit.
 
 ---
 
 ## Why GigShield Defeats Spoofing Better Than Simple Parametric Models
 
-**Q-Sure style (parametric triggers only):**
-- Relies on 4 external triggers: flood alerts, heat data, strike news, traffic API.
-- If a spoofing ring also spoofs traffic API or weather feed, the blind spot appears.
-- Cannot detect micro-coordinated rings (smaller than city-wide event).
+### Parametric-only model (Q-Sure style)
+- Depends mainly on external triggers (flood, heat, strike, traffic).
+- Vulnerable when feed integrity is degraded or manipulated.
+- Weak detection for micro-coordinated fraud rings.
 
-**GigShield approach (forensic + parametric):**
-- Combines device forensics (can a phone *physically* be at that location?) with environmental triggers.
-- Even if traffic API is compromised, barometric pressure + accelerometer data cannot be faked at scale.
-- Detects micro-rings (5 workers) before they scale to 500.
-- Learns continuously from attack attempts.
+### GigShield model (forensic + parametric)
+- Validates physical plausibility through device forensics + behavioral evidence.
+- Resilient even if one external feed degrades.
+- Detects small rings early before scale-up.
+- Continuously learns from attacks and appeals.
 
 ---
 
 ## Compliance & Audit-Ready Decision Trail
 
-Every claim decision produces:
+Every claim decision produces structured, replayable evidence:
 
 ```json
 {
@@ -427,11 +588,11 @@ Every claim decision produces:
   "individual_risk_score": 1.8,
   "cluster_risk_score": 0.9,
   "signal_breakdown": {
-    "movement_continuity": 0.2,
-    "device_integrity": 0.1,
-    "environmental_corroboration": 0.95,
-    "historical_reliability": 0.5,
-    "behavioral_anomaly": 0.05
+	 "movement_continuity": 0.2,
+	 "device_integrity": 0.1,
+	 "environmental_corroboration": 0.95,
+	 "historical_reliability": 0.5,
+	 "behavioral_anomaly": 0.05
   },
   "override_flag": false,
   "analyst_notes": null,
@@ -439,20 +600,26 @@ Every claim decision produces:
 }
 ```
 
-This JSON trail ensures:
-- **Regulatory compliance** (RBI, IRDAI, consumer protection boards).
-- **Worker appeal fairness** (explainable, reproducible decisions).
-- **Forensic auditability** (fraud investigators can replay decisions post-incident).
+This trail supports:
+- Regulatory compliance (RBI, IRDAI, consumer protection expectations).
+- Worker fairness through explainable and reproducible decisions.
+- Forensic auditability with post-incident decision replay.
 
 ---
 
 ## Success Criteria Against the 500-Worker Attack
 
 | Criterion | Target | GigShield Achievement |
-|-----------|--------|----------------------|
-| **Detection latency** | < 30 seconds | All coordinated bursts detected in < 5 seconds (cluster analysis runs in real-time) |
-| **False rejection rate (honest workers)** | < 2% | Designed for < 1% (grace mode + appeals loop minimize harm) |
-| **Fraud prevention (bad actors)** | > 95% | > 98% of coordinated rings neutralized before payout |
-| **Payout speed (genuine low-risk)** | < 30 seconds | Instant (under 100 ms) |
-| **Liquidity pool depletion** | 0% from coordinated attack | 0% (all thresholds hold before catastrophic drain) |
-| **System resilience (cascading failures)** | System remains available | Multi-layer failure modes (if GPS fails, sensor fusion still catches; if weather feed fails, device forensics trigger) |
+|---|---|---|
+| Detection latency | < 30 seconds | Coordinated bursts detected in < 5 seconds |
+| False rejection rate (honest workers) | < 2% | Designed for < 1% via grace mode + appeals |
+| Fraud prevention (bad actors) | > 95% | > 98% of coordinated rings neutralized pre-payout |
+| Payout speed (genuine low-risk) | < 30 seconds | Instant lane, typically < 100 ms decisioning |
+| Liquidity pool depletion | 0% from coordinated attack | 0% with thresholded controls |
+| System resilience | Platform remains available | Multi-layer fallback under feed/signal failures |
+
+---
+
+## Submission Positioning
+
+GigShield-AI is designed for adversarial conditions where attackers coordinate at population scale. It combines forensic device truth, cluster-level anomaly intelligence, fairness-aware worker UX, and liquidity-safe orchestration to preserve both trust and solvency under active attack.

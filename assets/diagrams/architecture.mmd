@@ -1,0 +1,20 @@
+flowchart BT
+  A["5) Human Oversight + Appeals Layer<br/>Fraud Console, Explainability, Appeal Loop"]
+  B["4) Decision Orchestration Layer<br/>Auto-Approve | Step-Up Verify | Investigate & Hold"]
+  C["3) Risk Scoring Layer<br/>Individual Claim Risk + Cluster Ring Risk"]
+  D["2) Feature Intelligence Layer<br/>Route Plausibility | Device Integrity | Historical Behavior"]
+  E["1) Signal Ingestion Layer<br/>GPS + Motion | Device Signals | Network/Session | Weather | History"]
+
+  E --> D --> C --> B --> A
+
+  classDef ingest fill:#E8F1FF,stroke:#0A66C2,color:#0B1A2B,stroke-width:1px;
+  classDef feature fill:#EAFBF0,stroke:#1F8B4C,color:#102417,stroke-width:1px;
+  classDef scoring fill:#FFF4E8,stroke:#B56200,color:#2C1A00,stroke-width:1px;
+  classDef decision fill:#FCEFF4,stroke:#B22222,color:#2D0E0E,stroke-width:1px;
+  classDef oversight fill:#F5F5F5,stroke:#111111,color:#111111,stroke-width:1.2px;
+
+  class E ingest;
+  class D feature;
+  class C scoring;
+  class B decision;
+  class A oversight;

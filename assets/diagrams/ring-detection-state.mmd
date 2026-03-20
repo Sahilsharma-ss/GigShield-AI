@@ -1,0 +1,28 @@
+stateDiagram-v2
+  [*] --> Normal
+
+  Normal : All claims processed individually
+  Normal : Cluster score 0 - 3.0
+
+  Normal --> YellowAlert : 5+ claims in 15 min from same 2km cell
+
+  YellowAlert : Enhanced verification for all claims in cell
+  YellowAlert : Cluster score 3.0 - 6.5
+
+  YellowAlert --> Normal : Burst subsides, no shared fingerprints found
+  YellowAlert --> RedAlert : Shared device fingerprints or IP patterns detected
+
+  RedAlert : Geo-cell circuit breaker ACTIVE
+  RedAlert : Payout throttle ENGAGED
+  RedAlert : Fraud analyst alerted with cluster graph
+  RedAlert : Cluster score 6.5 - 10.0
+
+  RedAlert --> Investigating : Analyst opens cluster review
+
+  Investigating : Manual fraud investigation underway
+  Investigating : Low-risk workers in cell still process normally
+
+  Investigating --> Normal : False alarm confirmed, circuit breaker released
+  Investigating --> Banned : Ring confirmed, fingerprints blocked
+
+  Banned --> [*] : Incident logged, model retrained
