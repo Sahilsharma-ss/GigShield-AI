@@ -149,7 +149,7 @@ With this architecture, a 500-worker spoofing ring is unlikely to drain the pool
 	"theme": "base",
 	"themeVariables": {
 		"background": "#0f172a",
-		"primaryTextColor": "#e5e7eb",
+		"primaryTextColor": "#3b62b2",
 		"lineColor": "#94a3b8",
 		"fontSize": "14px"
 	},
@@ -192,7 +192,7 @@ flowchart TD
 	"theme": "base",
 	"themeVariables": {
 		"background": "#0f172a",
-		"primaryTextColor": "#e5e7eb",
+		"primaryTextColor": "#000000",
 		"lineColor": "#94a3b8",
 		"fontSize": "13px"
 	},
@@ -346,7 +346,7 @@ State-driven cluster escalation under coordinated bursts:
 	"theme": "base",
 	"themeVariables": {
 		"background": "#0f172a",
-		"primaryTextColor": "#e5e7eb",
+		"primaryTextColor": "#040812",
 		"lineColor": "#94a3b8",
 		"fontSize": "13px"
 	},
